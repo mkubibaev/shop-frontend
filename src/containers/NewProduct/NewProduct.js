@@ -3,26 +3,40 @@ import {connect} from "react-redux";
 
 import ProductForm from "../../components/ProductForm/ProductForm";
 import {createProduct} from "../../store/actions/productsActions";
+import {fetchCategories} from "../../store/actions/categoriesActions";
 
 class NewProduct extends Component {
-  createProduct = productData => {
-    this.props.onProductCreated(productData).then(() => {
-      this.props.history.push('/');
-    });
-  };
+    componentDidMount() {
+        this.props.fetchCategories();
 
-  render() {
-    return (
-      <Fragment>
-        <h2>New product</h2>
-        <ProductForm onSubmit={this.createProduct} />
-      </Fragment>
-    );
-  }
+    }
+
+    createProduct = productData => {
+        this.props.onProductCreated(productData).then(() => {
+            this.props.history.push('/');
+        });
+    };
+
+    render() {
+        return (
+            <Fragment>
+                <h2>New product</h2>
+                <ProductForm
+                    categories={this.props.categories}
+                    onSubmit={this.createProduct}
+                />
+            </Fragment>
+        );
+    }
 }
 
-const mapDispatchToProps = dispatch => ({
-  onProductCreated: productData => dispatch(createProduct(productData))
+const mapStateToProps = state => ({
+    categories: state.categories.categories
 });
 
-export default connect(null, mapDispatchToProps)(NewProduct);
+const mapDispatchToProps = dispatch => ({
+    onProductCreated: productData => dispatch(createProduct(productData)),
+    fetchCategories: () => dispatch(fetchCategories())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewProduct);

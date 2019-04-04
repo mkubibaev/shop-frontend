@@ -1,55 +1,51 @@
 import React, {Component, Fragment} from 'react';
-import {Button, Card, CardBody} from "reactstrap";
+import {Button} from "reactstrap";
 import {fetchProducts} from "../../store/actions/productsActions";
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
-import ProductThumbnail from "../../components/ProductThumbnail/ProductThumbnail";
+import ProductListItem from "../../components/ProductListItem/ProductListItem";
 
 class Products extends Component {
-  componentDidMount() {
-    this.props.onFetchProducts();
-  }
+    componentDidMount() {
+        this.props.onFetchProducts();
+    }
 
-  render() {
-    return (
-      <Fragment>
-        <h2>
-          Products
-          <Link to="/products/new">
-            <Button
-              color="primary"
-              className="float-right"
-            >
-              Add product
-            </Button>
-          </Link>
-        </h2>
+    render() {
+        return (
+            <Fragment>
+                <h2>
+                    Products
+                    <Link to="/products/new">
+                        <Button
+                            color="primary"
+                            className="float-right"
+                        >
+                            Add product
+                        </Button>
+                    </Link>
+                </h2>
 
-        {this.props.products.map(product => (
-          <Card key={product._id} style={{marginTop: '10px'}}>
-            <CardBody>
-              <ProductThumbnail image={product.image}/>
-              <Link to={'/products/' + product.id}>
-                {product.title}
-              </Link>
-              <strong style={{marginLeft: '10px'}}>
-                {product.price} KGS
-              </strong>
-            </CardBody>
-          </Card>
-        ))}
+                {this.props.products.map(product => (
+                    <ProductListItem
+                        key={product._id}
+                        _id={product._id}
+                        title={product.title}
+                        price={product.price}
+                        image={product.image}
+                    />
+                ))}
 
-      </Fragment>
-    );
-  }
+            </Fragment>
+        );
+    }
 }
 
 const mapStateToProps = state => ({
-  products: state.products.products
+    products: state.products.products
 });
 
 const mapDispatchToProps = dispatch => ({
-  onFetchProducts: () => dispatch(fetchProducts())
+    onFetchProducts: () => dispatch(fetchProducts())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Products);
