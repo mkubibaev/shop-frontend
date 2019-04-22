@@ -13,6 +13,29 @@ import productsReducer from './store/reducers/productsReducer';
 import categoriesReducer from './store/reducers/categoryReducer';
 import usersReducer from './store/reducers/usersReducer';
 
+
+const saveToLocalStorage = state => {
+    try {
+        const serializedState = JSON.stringify(state);
+        localStorage.setItem('state', serializedState);
+    } catch (e) {
+        console.log('Could om save state');
+    }
+};
+
+const loadFromLocalStorage = () => {
+    try {
+        const serializedState = localStorage.getItem('state');
+        if (serializedState === null) {
+            return undefined;
+        }
+
+        return  JSON.parse(serializedState);
+    } catch (e) {
+        return undefined;
+    }
+};
+
 const history = createBrowserHistory();
 
 const rootReducer = combineReducers({
@@ -29,9 +52,19 @@ const middleware = [
     routerMiddleware(history)
 ];
 
-const enhancers = composeEnhancers(applyMiddleware(...middleware))
+const enhancers = composeEnhancers(applyMiddleware(...middleware));
 
-const store = createStore(rootReducer, enhancers);
+const persistedSate = loadFromLocalStorage();
+
+const store = createStore(rootReducer, persistedSate, enhancers);
+
+store.subscribe(() => {
+    saveToLocalStorage({
+        users: {
+            user: store.getState().users.user
+        }
+    });
+});
 
 const app = (
     <Provider store={store}>

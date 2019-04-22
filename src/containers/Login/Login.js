@@ -1,12 +1,10 @@
 import React, {Component, Fragment} from 'react';
-import {connect} from "react-redux";
 import {Alert, Button, Col, Form, FormGroup} from "reactstrap";
-
-import {registerUser} from "../../store/actions/usersActions";
 import FormElement from "../../components/UI/Form/FormElement";
+import {loginUser} from "../../store/actions/usersActions";
+import {connect} from "react-redux";
 
-
-class Register extends Component {
+class Login extends Component {
     state = {
         username: '',
         password: '',
@@ -20,25 +18,16 @@ class Register extends Component {
 
     submitFormHandler = event => {
         event.preventDefault();
-        this.props.registerUser({...this.state});
-    };
-
-    getFieldHasError = fieldName => {
-        return (
-            this.props.error &&
-            this.props.error.errors &&
-            this.props.error.errors[fieldName] &&
-            this.props.error.errors[fieldName].message
-        );
+        this.props.loginUser({...this.state})
     };
 
     render() {
         return (
             <Fragment>
-                <h2>Register new user</h2>
-                {this.props.error && this.props.error.global && (
+                <h2>Login</h2>
+                {this.props.error && (
                     <Alert color="danger">
-                        {this.props.error.global}
+                        {this.props.error.error || this.props.error.global}
                     </Alert>
                 )}
                 <Form onSubmit={this.submitFormHandler}>
@@ -48,9 +37,8 @@ class Register extends Component {
                         type="text"
                         value={this.state.username}
                         onChange={this.inputChangeHandler}
-                        error={this.getFieldHasError('username')}
-                        placeholder="Enter new username"
-                        autoComplete="new-username"
+                        placeholder="Enter your username"
+                        autoComplete="current-username"
                     />
 
                     <FormElement
@@ -59,14 +47,13 @@ class Register extends Component {
                         type="password"
                         value={this.state.password}
                         onChange={this.inputChangeHandler}
-                        error={this.getFieldHasError('password')}
-                        placeholder="Enter new password"
-                        autoComplete="new-password"
+                        placeholder="Enter your password"
+                        autoComplete="current-password"
                     />
 
                     <FormGroup row>
                         <Col sm={{offset: 2, size: 10}}>
-                            <Button type="submit" color="primary">Register</Button>
+                            <Button type="submit" color="primary">Login</Button>
                         </Col>
                     </FormGroup>
                 </Form>
@@ -76,11 +63,11 @@ class Register extends Component {
 }
 
 const mapStateToProps = state => ({
-    error: state.users.registerError
+    error: state.loginError
 });
 
 const mapDispatchToProps = dispatch => ({
-    registerUser: userData => dispatch(registerUser(userData))
+    loginUser: userData => dispatch(loginUser(userData))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
