@@ -2,6 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {Container} from "reactstrap";
 import {Route, Switch, withRouter} from "react-router-dom";
 import {connect} from "react-redux";
+import {NotificationContainer} from "react-notifications";
 
 import Toolbar from "./components/UI/Toolbar/Toolbar";
 import Products from "./containers/Products/Products";
@@ -14,6 +15,7 @@ class App extends Component {
     render() {
         return (
             <Fragment>
+                <NotificationContainer/>
                 <header>
                     <Toolbar
                         user={this.props.user}
